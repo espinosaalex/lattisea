@@ -25,7 +25,7 @@ local MAX_NUM_VOICES = 16
 
 engine.name = 'PolySub'
 
-local layoutint = 4 
+local layoutint = 4
 
 local latlit = 15
 local lvl = 4
@@ -53,22 +53,22 @@ local amp1 = 0.8
 local count = 1
 
 local intervals = {
-  {1, "sa", {right, down}}, 
-  {16/15, "k-re", {0, down * 2}}, 
-  {9/8, "re", {right * 3, down}}, 
-  {6/5, "k-ga", {right * 2, down * 2}}, 
-  {5/4, "ga", {right, 0}}, 
-  {4/3, "ma", {0, down}}, 
-  {45/32, "t-ma", {right * 3, 0}}, 
-  {3/2, "pa", {right * 2, down}}, 
-  {8/5, "k-dha", {right, down * 2}}, 
-  {5/3, "dha", {0, 0}}, 
-  {9/5, "k-ni", {right * 3, down * 2}}, 
+  {1, "sa", {right, down}},
+  {16/15, "k-re", {0, down * 2}},
+  {9/8, "re", {right * 3, down}},
+  {6/5, "k-ga", {right * 2, down * 2}},
+  {5/4, "ga", {right, 0}},
+  {4/3, "ma", {0, down}},
+  {45/32, "t-ma", {right * 3, 0}},
+  {3/2, "pa", {right * 2, down}},
+  {8/5, "k-dha", {right, down * 2}},
+  {5/3, "dha", {0, 0}},
+  {9/5, "k-ni", {right * 3, down * 2}},
   {15/8, "ni", {right * 2, 0}}
 }
 
 local center = 1
-local roothz = 24
+local roothz = 32
 local base = roothz
 
 local screens = {notes={lit={},pat={}}, transpose={lit={},pat={}}, rhythm={lit={},pat={}}}
@@ -80,7 +80,7 @@ local function getHzJust(note)
   ratio = intervals[(note % 12) + 1][1]
   oct = math.floor(note / 12) + 1
   return(base * 2^oct * ratio)
-end  
+end
 
 local function getNewBase(note)
   ratio = intervals[(note % 12) + 1][1]
@@ -113,16 +113,16 @@ function init()
     elseif i == "transpose" then event_type = grid_note_trans
     -- elseif i == 2 then event_type = grid_note_rhythm
     end
-    for n=1,4 do 
+    for n=1,4 do
       screens[i].pat[n] = pattern_time.new()
       screens[i].pat[n].process = event_type
     end
   end
-  
+
   scale = scales[1][1]
   pat = pattern_time.new()
   pat.process = grid_note
-  
+
   params:add{type="number",id="layoutint",name="layoutint",min=1,max=12,default=4,action=function(n) layoutint=n end}
   params:add{type="number",id="center",name="center",min=1,max=12,default=1,action=function(n) base = roothz * intervals[n][1] end}
   params:add_control("shape", "shape", controlspec.new(0,1,"lin",0,0,""))
@@ -219,7 +219,7 @@ function g.key(x, y, z)
         current_screen = "notes"
       end
     end
-  
+
   else
     if current_screen == "notes" then
       local e = {}
@@ -229,7 +229,7 @@ function g.key(x, y, z)
       e.state = z
       pat:watch(e)
       grid_note(e)
-    elseif current_screen == "transpose" then 
+    elseif current_screen == "transpose" then
       local trans = {}
       trans.id = x*8 + y
       trans.x = x
@@ -288,22 +288,22 @@ end
 function gridredraw()
   local pat = screens[current_screen].pat[1]
   g:all(0)
-  
+
   gridscale(scale)
-  
+
   g:led(1,1,2 + pat.rec * 10)
   g:led(1,2,2 + pat.play * 10)
   g:led(1,7,2)
   g:led(1,8,2)
-  
+
   -- if current_screen = notes sfsdfsf
 
-  if current_screen == "notes" then 
+  if current_screen == "notes" then
     g:led(1,8,12)
     for i,e in pairs(screens.notes.lit) do
       g:led(e.x, e.y,15)
     end
-  elseif current_screen == "transpose" then 
+  elseif current_screen == "transpose" then
     g:led(1,7,12)
     g:led(4,5,10)
     for i,e in pairs(screens.transpose.lit) do
@@ -327,7 +327,7 @@ end
 function enc(n,d)
     if n == 2 then
       amp1 = amp1 + d
-    elseif n == 3 then 
+    elseif n == 3 then
       if d > 0 then
         count = count + 1
         if count > #scales then count = 1 end
